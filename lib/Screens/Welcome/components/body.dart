@@ -21,8 +21,8 @@ class Body extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.bold,fontSize: 23.0),
             ),
             SizedBox(height: size.height * 0.15),
-            SvgPicture.asset(
-              "assets/icons/chat.svg",
+            Image.asset(
+              "assets/icons/chat.png",
               height: size.height * 0.45,
             ),
           ],

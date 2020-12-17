@@ -74,15 +74,10 @@ class _signuppageState extends State<Body> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            SizedBox(height: 28),
-            Text(
-              "SIGNUP",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
             SizedBox(height: size.height * 0.03),
-            SvgPicture.asset(
-              "assets/icons/signup.svg",
-              height: size.height * 0.32,
+            Image.asset(
+              "assets/icons/signup.png",
+              height: size.height * 0.30,
             ),
             RoundedInputField(
               hintText: "Username",
@@ -107,7 +102,7 @@ class _signuppageState extends State<Body> {
                 _validateRegisterInput();
               },
             ),
-            SizedBox(height: size.height * 0.03),
+            SizedBox(height: size.height * 0.02),
             AlreadyHaveAnAccountCheck(
               login: false,
               press: () {

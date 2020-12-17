@@ -21,6 +21,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         return true;
       },
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: Scaffold(
           body: Body(),
         ),
