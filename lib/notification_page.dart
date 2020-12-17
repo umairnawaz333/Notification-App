@@ -37,16 +37,7 @@ class _NotifiState extends State<Notifi> {
     super.initState();
     loadSharedPrefs();
     getMessage();
-    checkadmin();
-  }
 
-  checkadmin()async{
-    if(username.toLowerCase() == "umair"){
-      isadmin = true;
-    }
-    else{
-      isadmin = false;
-    }
   }
 
   loadSharedPrefs() async {
@@ -62,6 +53,13 @@ class _NotifiState extends State<Notifi> {
       });
     } catch (Excepetion) {
       print("Error to read data...");
+    }
+
+    if(username.toLowerCase() == "umair"){
+      isadmin = true;
+    }
+    else{
+      isadmin = false;
     }
   }
 
@@ -181,6 +179,7 @@ class _NotifiState extends State<Notifi> {
         return value == true;
       },
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: Scaffold(
           appBar: AppBar(
             title: Center(child: Text("Notifi App")),
