@@ -14,6 +14,12 @@ class SharedPref {
     return l;
   }
 
+  reademail(String key) async {
+    final prefs = await SharedPreferences.getInstance();
+    var d = json.decode(prefs.getString(key));
+    return d;
+  }
+
   save(String key, value) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setString(key, json.encode(value));

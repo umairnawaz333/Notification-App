@@ -1,0 +1,129 @@
+import 'package:flutter/material.dart';
+import 'package:notification_app/Screens/Login/login_screen.dart';
+import 'package:notification_app/Screens/Signup/components/background.dart';
+import 'package:notification_app/components/already_have_an_account_acheck.dart';
+import 'package:notification_app/components/rounded_button.dart';
+import 'package:notification_app/components/rounded_input_field.dart';
+import 'package:notification_app/components/rounded_password_field.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:notification_app/constants.dart';
+import 'package:notification_app/notification_page.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
+class Body extends StatefulWidget {
+
+  @override
+  _signuppageState createState() => _signuppageState();
+}
+
+
+class _signuppageState extends State<Body> {
+
+  String username,email,password;
+
+  void _validateRegisterInput() async {
+    try{
+      await Firebase.initializeApp();
+      UserCredential result = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
+
+      User user = result.user;
+      await user.updateProfile(displayName: username);
+      user.sendEmailVerification();
+      print(user);
+      if(user != null){
+        Navigator.of(context).pushReplacement(
+            PageRouteBuilder(
+                transitionDuration: Duration(seconds: 2),
+                pageBuilder: (_, __, ___) => LoginScreen()
+            )
+        );
+      }
+      else{
+        Fluttertoast.showToast(
+            msg: "Something wrrong in information...",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
+      }
+    }
+    catch(error){
+        Fluttertoast.showToast(
+            msg: error.code,
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
+    }
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    return Background(
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(height: 28),
+            Text(
+              "SIGNUP",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: size.height * 0.03),
+            SvgPicture.asset(
+              "assets/icons/signup.svg",
+              height: size.height * 0.32,
+            ),
+            RoundedInputField(
+              hintText: "Username",
+              onChanged: (value) {
+                username = value;
+              },
+            ),
+            RoundedInputField(
+              hintText: "Your Email",
+              onChanged: (value) {
+                email = value;
+              },
+            ),
+            RoundedPasswordField(
+              onChanged: (value) {
+                password = value;
+              },
+            ),
+            RoundedButton(
+              text: "SIGNUP",
+              press: () {
+                _validateRegisterInput();
+              },
+            ),
+            SizedBox(height: size.height * 0.03),
+            AlreadyHaveAnAccountCheck(
+              login: false,
+              press: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return LoginScreen();
+                    },
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
