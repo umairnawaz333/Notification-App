@@ -24,6 +24,27 @@ class _signuppageState extends State<Body> {
   String username,email,password;
 
   void _validateRegisterInput() async {
+    BuildContext dialogContext;
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        dialogContext = context;
+        return Dialog(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: new Row(
+              children: [
+                new CircularProgressIndicator(),
+                SizedBox(width: 25.0,),
+                new Text("Loading"),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+
     try{
       await Firebase.initializeApp();
       UserCredential result = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
@@ -32,12 +53,31 @@ class _signuppageState extends State<Body> {
       await user.updateProfile(displayName: username);
       user.sendEmailVerification();
       print(user);
+      Navigator.pop(dialogContext);
       if(user != null){
-        Navigator.of(context).pushReplacement(
-            PageRouteBuilder(
-                transitionDuration: Duration(seconds: 2),
-                pageBuilder: (_, __, ___) => LoginScreen()
-            )
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+        return AlertDialog(
+          content: new Text("Verified you email by click on Link... that sent to your email",
+                  style: TextStyle(color: kPrimaryColor),),
+          actions: <Widget>[
+            new FlatButton(
+              color: kPrimaryColor,
+              child: new Text("OK",style: TextStyle(color: Colors.white)),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushReplacement(
+                    PageRouteBuilder(
+                        transitionDuration: Duration(seconds: 2),
+                        pageBuilder: (_, __, ___) => LoginScreen()
+                    )
+                );
+              },
+            ),
+          ],
+        );
+            },
         );
       }
       else{
@@ -53,6 +93,7 @@ class _signuppageState extends State<Body> {
       }
     }
     catch(error){
+      Navigator.pop(dialogContext);
         Fluttertoast.showToast(
             msg: error.code,
             toastLength: Toast.LENGTH_SHORT,

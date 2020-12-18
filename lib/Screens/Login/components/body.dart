@@ -107,7 +107,6 @@ class _BodyState extends State<Body> {
 
     Size size = MediaQuery.of(context).size;
     return Background(
-
       child: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -138,14 +137,7 @@ class _BodyState extends State<Body> {
             SizedBox(height: size.height * 0.03),
             AlreadyHaveAnAccountCheck(
               press: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return SignUpScreen();
-                    },
-                  ),
-                );
+                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => SignUpScreen()));
               },
             ),
           ],

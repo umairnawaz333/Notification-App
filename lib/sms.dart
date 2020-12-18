@@ -8,8 +8,8 @@ class sms extends StatefulWidget {
   final String reloadLabel = 'Reload!';
   final String fireLabel = 'Submit';
   final Color floatingButtonColor = Colors.red;
-  final IconData reloadIcon = Icons.refresh;
-  final IconData fireIcon = Icons.filter_center_focus;
+  final IconData reloadIcon = Icons.perm_identity_rounded;
+  final IconData fireIcon = Icons.perm_identity_rounded;
 
   @override
   _MyHomePageState createState() => new _MyHomePageState(

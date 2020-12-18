@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:notification_app/ContactUs.dart';
 import 'package:notification_app/Screens/Login/login_screen.dart';
 import 'package:notification_app/constants.dart';
 import 'package:notification_app/sms.dart';
@@ -191,7 +192,7 @@ class _NotifiState extends State<Notifi> {
                   color: Colors.white,
                 ),
                 onPressed: () {
-                  // Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => sms()));
+                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => ContactUs()));
                 },
               ),
               IconButton(
