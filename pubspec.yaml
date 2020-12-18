@@ -44,6 +44,7 @@ dependencies:
   csv: ^4.0.3
   sms: ^0.2.0
   flutter_slidable: ^0.5.4
+  permission_handler: ^4.3.0
 
 dev_dependencies:
   flutter_test:

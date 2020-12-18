@@ -10,6 +10,7 @@ import 'package:notification_app/sms.dart';
 import 'SharedPref.dart';
 import 'package:intl/intl.dart';
 import 'package:clipboard_manager/clipboard_manager.dart';
+import 'package:notification_app/PermissionService.dart';
 
 class Notifi extends StatefulWidget {
   @override
@@ -32,9 +33,9 @@ class _NotifiState extends State<Notifi> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    permissionAcessPhone();
     loadSharedPrefs();
     getMessage();
-
   }
 
   loadSharedPrefs() async {
@@ -62,6 +63,12 @@ class _NotifiState extends State<Notifi> {
       setState(() {
       });
     }
+  }
+
+  Future permissionAcessPhone() {
+    PermissionService().requestPermission(onPermissionDenied: () {
+      print('Permission has been denied');
+    });
   }
 
   void getMessage() {

@@ -3,6 +3,7 @@ import 'package:contacts_service/contacts_service.dart';
 import 'package:notification_app/massage.dart';
 
 
+
 class sms extends StatefulWidget {
 
   final String reloadLabel = 'Reload!';
@@ -42,6 +43,8 @@ class _MyHomePageState extends State<sms> {
     super.initState();
     refreshContacts();
   }
+
+
 
   @override
   Widget build(BuildContext context) {
