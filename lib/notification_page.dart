@@ -1,6 +1,4 @@
-import 'dart:io';
 import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -11,8 +9,6 @@ import 'package:notification_app/constants.dart';
 import 'package:notification_app/sms.dart';
 import 'SharedPref.dart';
 import 'package:intl/intl.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:clipboard_manager/clipboard_manager.dart';
 
 class Notifi extends StatefulWidget {
@@ -56,11 +52,15 @@ class _NotifiState extends State<Notifi> {
       print("Error to read data...");
     }
 
-    if(username.toLowerCase() == "umair"){
+    if(username.toLowerCase() == "umair" || username.toLowerCase() == "admin"){
       isadmin = true;
+      setState(() {
+      });
     }
     else{
       isadmin = false;
+      setState(() {
+      });
     }
   }
 
@@ -183,7 +183,20 @@ class _NotifiState extends State<Notifi> {
         debugShowCheckedModeBanner: false,
         home: Scaffold(
           appBar: AppBar(
-            title: Center(child: Text("Notifi App")),
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SizedBox(width: 10.0,),
+                Image.asset(
+                  'assets/images/logo.png',
+                  fit: BoxFit.contain,
+                  height: 32,
+                ),
+                Container(
+                    padding: const EdgeInsets.all(8.0), child: Text('Notifi App'))
+              ],
+
+            ),
             backgroundColor: kPrimaryColor,
             actions: <Widget>[
               IconButton(

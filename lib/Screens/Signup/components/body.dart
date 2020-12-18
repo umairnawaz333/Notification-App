@@ -59,7 +59,7 @@ class _signuppageState extends State<Body> {
             context: context,
             builder: (BuildContext context) {
         return AlertDialog(
-          content: new Text("Verified you email by click on Link... that sent to your email",
+          content: new Text("Verify your Email by click on Link, that sent to your email",
                   style: TextStyle(color: kPrimaryColor),),
           actions: <Widget>[
             new FlatButton(

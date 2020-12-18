@@ -18,7 +18,7 @@ class _ContactUsState extends State<ContactUs> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  SizedBox(height: 24.0),
+                  SizedBox(height: 32.0),
                   Text(
                     "About Us",
                     style: TextStyle(

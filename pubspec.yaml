@@ -37,7 +37,7 @@ dependencies:
   firebase_auth:
   firebase_core :
   fluttertoast: ^7.1.5
-  clipboard_manager: ^0.0.1
+  clipboard_manager: ^0.0.4
   contacts_service: ^0.4.6
   contact_picker: ^0.0.2
   file_picker: ^1.9.0+1

@@ -17,7 +17,7 @@ class Body extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              "Wellcom to Notifi App",
+              "Welcome to Notifi App",
               style: TextStyle(fontWeight: FontWeight.bold,fontSize: 23.0),
             ),
             SizedBox(height: size.height * 0.15),
