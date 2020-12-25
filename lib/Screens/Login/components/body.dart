@@ -43,10 +43,12 @@ class _BodyState extends State<Body> {
   }
 
   void signIn() async{
+    BuildContext dialogContext;
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
+        dialogContext = context;
         return Dialog(
           child: Padding(
             padding: const EdgeInsets.all(20.0),
@@ -79,7 +81,7 @@ class _BodyState extends State<Body> {
       );
     }
 
-    Navigator.of(context).pop();
+    Navigator.of(dialogContext).pop();
     User user = result.user;
     if (user.emailVerified) {
       print(user);
@@ -120,6 +122,9 @@ class _BodyState extends State<Body> {
             RoundedInputField(
               hintText: "Your Email",
               onChanged: (value) {
+                if(value[value.length] == " "){
+                  value = value.substring(0, value.length - 1);
+                }
                 email = value;
               },
             ),

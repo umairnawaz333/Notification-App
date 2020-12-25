@@ -129,6 +129,9 @@ class _signuppageState extends State<Body> {
             RoundedInputField(
               hintText: "Your Email",
               onChanged: (value) {
+                if(value[value.length] == " "){
+                  value = value.substring(0, value.length - 1);
+                }
                 email = value;
               },
             ),

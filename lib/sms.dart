@@ -44,8 +44,6 @@ class _MyHomePageState extends State<sms> {
     refreshContacts();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
