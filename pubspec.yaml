@@ -45,6 +45,10 @@ dependencies:
   sms: ^0.2.0
   flutter_slidable: ^0.5.4
   permission_handler: ^4.3.0
+  firebase_admin: ^0.1.4
+  firebase_storage: ^5.2.0
+  custom_switch_button: ^0.5.0
+  flutter_speed_dial: ^1.0.9
 
 dev_dependencies:
   flutter_test:

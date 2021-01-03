@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:notification_app/Screens/Login/components/background.dart';
 import 'package:notification_app/Screens/Signup/signup_screen.dart';
@@ -12,6 +14,7 @@ import 'package:notification_app/notification_page.dart';
 import 'package:notification_app/constants.dart';
 import 'package:notification_app/SharedPref.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:notification_app/user_manager.dart';
 
 class Body extends StatefulWidget {
   @override
@@ -19,30 +22,31 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
-  String email, password;
+  String email, password, token;
+  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
   SharedPref sharedPref = SharedPref();
 
   @override
-  initState(){
+  initState() {
     super.initState();
     // check_email();
   }
 
-  void check_email() async{
-    try{
-      String e = await sharedPref.reademail("email");
-      print(e);
-      if(e != null){
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => Notifi()));
-      }
-    }
-    catch(error){
-      print(error);
-    }
-  }
+  // void check_email() async{
+  //   try{
+  //     String e = await sharedPref.reademail("email");
+  //     print(e);
+  //     if(e != null){
+  //       Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => Notifi()));
+  //     }
+  //   }
+  //   catch(error){
+  //     print(error);
+  //   }
+  // }
 
-  void signIn() async{
+  void signIn() async {
     BuildContext dialogContext;
     showDialog(
       context: context,
@@ -55,7 +59,9 @@ class _BodyState extends State<Body> {
             child: new Row(
               children: [
                 new CircularProgressIndicator(),
-                SizedBox(width: 25.0,),
+                SizedBox(
+                  width: 25.0,
+                ),
                 new Text("Loading"),
               ],
             ),
@@ -65,11 +71,53 @@ class _BodyState extends State<Body> {
     );
 
     UserCredential result;
-    try{
+    try {
       await Firebase.initializeApp();
-      result = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
-    }
-    catch(error){
+      result = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+
+      User user = result.user;
+      if (user != null) {
+        if (user.emailVerified) {
+          print(user);
+
+          _firebaseMessaging.getToken().then((t) {
+            token = t;
+            print(token);
+            FirebaseFirestore _firestore = FirebaseFirestore.instance;
+            DocumentReference ref =
+            _firestore.collection('users').doc(user.email);
+            ref.update({
+              'token': token
+            });
+            Navigator.pop(dialogContext);
+            sharedPref.save("email", user.email);
+            sharedPref.save("username", user.displayName);
+            if(user.email == "umair.nawaz1997@gmail.com"){
+              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+                  user_manager()), (Route<dynamic> route) => false);
+            }
+            else{
+            Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => Notifi()),
+                    (Route<dynamic> route) => false);
+            }
+          });
+        }
+        else {
+          Navigator.pop(dialogContext);
+          Fluttertoast.showToast(
+              msg: "Verified you email by click on Link... that sent to your email",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              fontSize: 14.0);
+        }
+      }
+    } catch (error) {
+      Navigator.pop(dialogContext);
       Fluttertoast.showToast(
           msg: error.code,
           toastLength: Toast.LENGTH_SHORT,
@@ -77,36 +125,12 @@ class _BodyState extends State<Body> {
           timeInSecForIosWeb: 1,
           backgroundColor: Colors.red,
           textColor: Colors.white,
-          fontSize: 14.0
-      );
-    }
-
-    Navigator.of(dialogContext).pop();
-    User user = result.user;
-    if (user.emailVerified) {
-      print(user);
-      sharedPref.save("email", user.email);
-      sharedPref.save("username", user.displayName);
-      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
-          Notifi()), (Route<dynamic> route) => false);
-
-    }
-    else{
-      Fluttertoast.showToast(
-          msg: "Verified you email by click on Link... that sent to your email",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 14.0
-      );
+          fontSize: 14.0);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-
     Size size = MediaQuery.of(context).size;
     return Background(
       child: SingleChildScrollView(
@@ -122,9 +146,6 @@ class _BodyState extends State<Body> {
             RoundedInputField(
               hintText: "Your Email",
               onChanged: (value) {
-                if(value[value.length] == " "){
-                  value = value.substring(0, value.length - 1);
-                }
                 email = value;
               },
             ),
@@ -142,7 +163,10 @@ class _BodyState extends State<Body> {
             SizedBox(height: size.height * 0.03),
             AlreadyHaveAnAccountCheck(
               press: () {
-                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => SignUpScreen()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => SignUpScreen()));
               },
             ),
           ],

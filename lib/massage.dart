@@ -16,7 +16,7 @@ class massage extends StatefulWidget {
 class _MessageState extends State<massage> {
   List<String> recipients = [];
   List<Contact> contact;
-  String m;
+  String m="";
 
   _MessageState(this.contact);
 
@@ -56,41 +56,55 @@ class _MessageState extends State<massage> {
       appBar: new AppBar(
         title: new Text("Send Message"),
       ),
-      body: Column(
-        children: [
-          SizedBox(height: 15.0,),
-          Container(
-            padding: EdgeInsets.all(15.0),
-              child: new TextField(minLines: 4,maxLines: 10,style: TextStyle(fontSize: 18.0),
-            onChanged: (text) {
-              m = text;
-            },
-            decoration: new InputDecoration(
-              border: new OutlineInputBorder(
-                  borderSide: new BorderSide(color: kPrimaryColor,width: 1.0)),
-              labelText: 'Message',
-            ),
-          )),
-          SizedBox(height: 15.0,),
-          SizedBox.fromSize(
-            size: Size(56, 56), // button width and height
-            child: ClipOval(
-              child: Material(
-                color: kPrimaryColor, // button color
-                child: InkWell(
-                  splashColor: NotificationColor, // splash color
-                  onTap: () {
-                    _sendSMS();
-                  }, // button pressed
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 5.0),
-                    child: Icon(Icons.send_rounded,color: Colors.white,),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(height: 15.0,),
+            Container(
+              padding: EdgeInsets.all(15.0),
+                child: new TextField(minLines: 6,maxLines: 10,style: TextStyle(fontSize: 18.0),
+              onChanged: (text) {
+                m = text;
+              },
+              decoration: new InputDecoration(
+                border: new OutlineInputBorder(
+                    borderSide: new BorderSide(color: kPrimaryColor,width: 1.0)),
+                labelText: 'Message',
+              ),
+            )),
+            SizedBox(height: 22.0,),
+            SizedBox.fromSize(
+              size: Size(56, 56), // button width and height
+              child: ClipOval(
+                child: Material(
+                  color: kPrimaryColor, // button color
+                  child: InkWell(
+                    splashColor: NotificationColor, // splash color
+                    onTap: () {
+                      if(m != ""){
+                        _sendSMS();
+                      }
+                      else{
+                        Fluttertoast.showToast(
+                            msg: "Empty TextField!",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.deepOrange,
+                            textColor: Colors.white,
+                            fontSize: 15.0);
+                      }
+                    }, // button pressed
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 5.0),
+                      child: Icon(Icons.send_rounded,color: Colors.white,),
+                    ),
                   ),
                 ),
               ),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }

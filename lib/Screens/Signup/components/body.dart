@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:notification_app/Screens/Login/login_screen.dart';
 import 'package:notification_app/Screens/Signup/components/background.dart';
@@ -13,15 +15,13 @@ import 'package:notification_app/notification_page.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class Body extends StatefulWidget {
-
   @override
   _signuppageState createState() => _signuppageState();
 }
 
-
 class _signuppageState extends State<Body> {
-
-  String username,email,password;
+  String username, email, password, token;
+  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
   void _validateRegisterInput() async {
     BuildContext dialogContext;
@@ -36,7 +36,9 @@ class _signuppageState extends State<Body> {
             child: new Row(
               children: [
                 new CircularProgressIndicator(),
-                SizedBox(width: 25.0,),
+                SizedBox(
+                  width: 25.0,
+                ),
                 new Text("Loading"),
               ],
             ),
@@ -45,42 +47,57 @@ class _signuppageState extends State<Body> {
       },
     );
 
-    try{
+    try {
       await Firebase.initializeApp();
-      UserCredential result = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
+      UserCredential result = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
 
       User user = result.user;
       await user.updateProfile(displayName: username);
       user.sendEmailVerification();
       print(user);
-      Navigator.pop(dialogContext);
-      if(user != null){
-        showDialog(
+
+      if (user != null) {
+        _firebaseMessaging.getToken().then((t) {
+          token = t;
+          print(token);
+          FirebaseFirestore _firestore = FirebaseFirestore.instance;
+          DocumentReference ref =
+              _firestore.collection('users').doc(user.email);
+          ref.set({
+            'UID': user.uid,
+            'name': username,
+            'type': "user",
+            'token': token
+          });
+          Navigator.pop(dialogContext);
+          showDialog(
             context: context,
             builder: (BuildContext context) {
-        return AlertDialog(
-          content: new Text("Verify your Email by click on Link, that sent to your email",
-                  style: TextStyle(color: kPrimaryColor),),
-          actions: <Widget>[
-            new FlatButton(
-              color: kPrimaryColor,
-              child: new Text("OK",style: TextStyle(color: Colors.white)),
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).pushReplacement(
-                    PageRouteBuilder(
-                        transitionDuration: Duration(seconds: 2),
-                        pageBuilder: (_, __, ___) => LoginScreen()
-                    )
-                );
-              },
-            ),
-          ],
-        );
+              return AlertDialog(
+                content: new Text(
+                  "Verify your Email by click on Link, that sent to your email",
+                  style: TextStyle(color: kPrimaryColor),
+                ),
+                actions: <Widget>[
+                  new FlatButton(
+                    color: kPrimaryColor,
+                    child:
+                        new Text("OK", style: TextStyle(color: Colors.white)),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pushReplacement(PageRouteBuilder(
+                          transitionDuration: Duration(seconds: 2),
+                          pageBuilder: (_, __, ___) => LoginScreen()));
+                    },
+                  ),
+                ],
+              );
             },
-        );
-      }
-      else{
+          );
+        });
+      } else {
+        Navigator.pop(dialogContext);
         Fluttertoast.showToast(
             msg: "Something wrrong in information...",
             toastLength: Toast.LENGTH_SHORT,
@@ -88,24 +105,20 @@ class _signuppageState extends State<Body> {
             timeInSecForIosWeb: 1,
             backgroundColor: Colors.red,
             textColor: Colors.white,
-            fontSize: 16.0
-        );
+            fontSize: 16.0);
       }
-    }
-    catch(error){
+    } catch (error) {
       Navigator.pop(dialogContext);
-        Fluttertoast.showToast(
-            msg: error.code,
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            fontSize: 16.0
-        );
+      Fluttertoast.showToast(
+          msg: error.code,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -129,9 +142,6 @@ class _signuppageState extends State<Body> {
             RoundedInputField(
               hintText: "Your Email",
               onChanged: (value) {
-                if(value[value.length] == " "){
-                  value = value.substring(0, value.length - 1);
-                }
                 email = value;
               },
             ),
