@@ -44,7 +44,7 @@ class _ContactUsState extends State<ContactUs> {
                   ),
                   SizedBox(height: 30.0),
                   Text(
-                    "www.learnhubstudio.com",
+                    "Design & Develop By UMAIR NAWAZ",
                     style: TextStyle(
                       color: kPrimaryColor,
                     ),

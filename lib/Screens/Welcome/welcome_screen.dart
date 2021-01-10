@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:notification_app/Screens/Welcome/components/body.dart';
+import 'package:notification_app/Screens/Welcome/components/background.dart';
 import 'package:notification_app/Screens/Login/login_screen.dart';
 import 'dart:async';
 import 'package:notification_app/notification_page.dart';
@@ -19,8 +19,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   @override
   void initState(){
-    super.initState();
     check_email();
+    super.initState();
   }
 
   void check_email() async{
@@ -64,8 +64,26 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
-      body: Body(),
+      body: Background(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                "Welcome to Notifi App",
+                style: TextStyle(fontWeight: FontWeight.bold,fontSize: 23.0),
+              ),
+              SizedBox(height: size.height * 0.15),
+              Image.asset(
+                "assets/icons/chat.png",
+                height: size.height * 0.45,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
