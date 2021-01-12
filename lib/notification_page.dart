@@ -9,6 +9,7 @@ import 'package:notification_app/Screens/Login/login_screen.dart';
 import 'package:notification_app/constants.dart';
 import 'package:notification_app/notification_center.dart';
 import 'package:notification_app/sms.dart';
+import 'package:notification_app/user_manager.dart';
 import 'SharedPref.dart';
 import 'package:intl/intl.dart';
 import 'package:clipboard_manager/clipboard_manager.dart';
@@ -22,7 +23,7 @@ class Notifi extends StatefulWidget {
 }
 
 class _NotifiState extends State<Notifi> with SingleTickerProviderStateMixin{
-  String username, type;
+  String username, type, email;
   SharedPref sharedPref = SharedPref();
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   List<String> loaddata = [];
@@ -35,16 +36,17 @@ class _NotifiState extends State<Notifi> with SingleTickerProviderStateMixin{
 
   @override
   void initState() {
-    super.initState();
-    permissionAcessPhone();
     loadSharedPrefs();
     getMessage();
+    super.initState();
+    permissionAcessPhone();
   }
 
   loadSharedPrefs() async {
     try {
       username = await sharedPref.reademail("username");
       type = await sharedPref.reademail("type");
+      email = await sharedPref.reademail("email");
       List<String> mydata = await sharedPref.read("user");
       List<String> mydate = await sharedPref.read("date");
       setState(() {
@@ -58,12 +60,24 @@ class _NotifiState extends State<Notifi> with SingleTickerProviderStateMixin{
     }
 
     if (type == "manager") {
+      username +=" (Manager";
       isadmin = true;
       setState(() {});
     } else {
+      username +=" (User";
       isadmin = false;
       setState(() {});
     }
+
+    if(email == "umair.nawaz1997@gmail.com"){
+      username += " - Admin)";
+    }
+    else{
+      username += ")";
+    }
+    setState(() {
+
+    });
   }
 
   Future permissionAcessPhone() {
@@ -179,6 +193,7 @@ class _NotifiState extends State<Notifi> with SingleTickerProviderStateMixin{
               return AlertDialog(
                 content: Text(
                   username + ', Are you sure you want to exit?',
+                  style: TextStyle(fontWeight: FontWeight.bold)
                 ),
                 actions: <Widget>[
                   FlatButton(
@@ -223,6 +238,21 @@ class _NotifiState extends State<Notifi> with SingleTickerProviderStateMixin{
             ),
             backgroundColor: kPrimaryColor,
             actions: <Widget>[
+              (email == "umair.nawaz1997@gmail.com")?
+              IconButton(
+                icon: Icon(
+                  Icons.people_rounded,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => user_manager()));
+                },
+              )
+              : Container(),
+
               IconButton(
                 icon: Icon(
                   Icons.info_outline,
@@ -317,6 +347,12 @@ class _NotifiState extends State<Notifi> with SingleTickerProviderStateMixin{
         elevation: 8.0,
         shape: CircleBorder(),
         children: [
+            // SpeedDialChild(
+            //   child: Icon(Icons.people_rounded),
+            //   backgroundColor: kPrimaryColor,
+            //   label: 'Show Users',
+            //   onTap: () => Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => sms())),
+            // ),
           SpeedDialChild(
               child: Icon(Icons.send_rounded),
               backgroundColor: kPrimaryColor,

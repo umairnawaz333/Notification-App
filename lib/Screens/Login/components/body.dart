@@ -30,21 +30,7 @@ class _BodyState extends State<Body> {
   @override
   initState() {
     super.initState();
-    // check_email();
   }
-
-  // void check_email() async{
-  //   try{
-  //     String e = await sharedPref.reademail("email");
-  //     print(e);
-  //     if(e != null){
-  //       Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => Notifi()));
-  //     }
-  //   }
-  //   catch(error){
-  //     print(error);
-  //   }
-  // }
 
   void signIn() async {
     BuildContext dialogContext;
@@ -93,15 +79,15 @@ class _BodyState extends State<Body> {
             Navigator.pop(dialogContext);
             sharedPref.save("email", user.email);
             sharedPref.save("username", user.displayName);
-            if(user.email == "umair.nawaz1997@gmail.com"){
-              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
-                  user_manager()), (Route<dynamic> route) => false);
-            }
-            else{
+            // if(user.email == "umair.nawaz1997@gmail.com"){
+            //   Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+            //       user_manager()), (Route<dynamic> route) => false);
+            // }
+            // else{
             Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (context) => Notifi()),
                     (Route<dynamic> route) => false);
-            }
+            // }
           });
         }
         else {

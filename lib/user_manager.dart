@@ -6,7 +6,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_admin/firebase_admin.dart';
+import 'package:notification_app/Screens/Welcome/welcome_screen.dart';
 import 'package:notification_app/constants.dart';
+import 'package:notification_app/notification_page.dart';
 
 
 class user_manager extends StatefulWidget {
@@ -64,9 +66,9 @@ class _usernamagerState extends State<user_manager> {
     var data = {
       "UID": userlist[index].get("UID"),
       "name": userlist[index].get("name"),
+      "token": userlist[index].get("token"),
       "type" : type,
     };
-
 
     BuildContext dialogContext;
     showDialog(
@@ -88,8 +90,6 @@ class _usernamagerState extends State<user_manager> {
         );
       },
     );
-
-
 
     FirebaseFirestore _firestore = FirebaseFirestore.instance;
     DocumentReference ref = _firestore.collection("users").doc(userlist[index].id);
@@ -175,24 +175,54 @@ class _usernamagerState extends State<user_manager> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text("All Users"),
-        ),
-        body: Center(
-          child: (userlist.length > 0)
-              ? ListView.builder(
-            itemCount: userlist.length,
-            itemBuilder: (context, index) {
-              return userdatabox(
-                  index
-              );
-            },
-          )
-              :
-          Center(
-            child: CircularProgressIndicator(),
+    return WillPopScope(
+      onWillPop: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              content: new Text(
+                "We need to Refresh the App... ",
+                style: TextStyle(color: kPrimaryColor),
+              ),
+              actions: <Widget>[
+                new FlatButton(
+                  color: kPrimaryColor,
+                  child:
+                  new Text("OK", style: TextStyle(color: Colors.white)),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pushReplacement(PageRouteBuilder(
+                        transitionDuration: Duration(seconds: 2),
+                        pageBuilder: (_, __, ___) => WelcomeScreen()));
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(
+          appBar: AppBar(
+            backgroundColor: kPrimaryColor,
+            title: Text("All Users"),
+          ),
+          body: Center(
+            child: (userlist.length > 0)
+                ? ListView.builder(
+              itemCount: userlist.length,
+              itemBuilder: (context, index) {
+                return userdatabox(
+                    index
+                );
+              },
+            )
+                :
+            Center(
+              child: CircularProgressIndicator(),
+            ),
           ),
         ),
       ),

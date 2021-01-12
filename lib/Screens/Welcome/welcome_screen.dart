@@ -42,14 +42,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       print(e);
       if(e != null){
         Timer(Duration(seconds: 4), (){
-          if(e == "umair.nawaz1997@gmail.com"){
-            Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
-                user_manager()), (Route<dynamic> route) => false);
-          }
-          else{
+          // if(e == "umair.nawaz1997@gmail.com"){
+          //   Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+          //       user_manager()), (Route<dynamic> route) => false);
+          // }
+          // else{
             Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
                 Notifi()), (Route<dynamic> route) => false);
-          }
+          // }
           // Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => Notifi()));
         });
       }

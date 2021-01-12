@@ -5,8 +5,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:notification_app/Screens/Welcome/welcome_screen.dart';
 import 'package:notification_app/constants.dart';
-
 
 class notification_center extends StatefulWidget {
   @override
@@ -39,6 +39,28 @@ class _notification_centerState extends State<notification_center> {
   }
 
   send_notification() async {
+    BuildContext dialogContext;
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        dialogContext = context;
+        return Dialog(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: new Row(
+              children: [
+                new CircularProgressIndicator(),
+                SizedBox(width: 25.0,),
+                new Text("Loading"),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+
+
     var noti = {'title' :title , 'body': body};
     var data = {'click_action': "FLUTTER_NOTIFICATION_CLICK",'mytext': title+"\n"+body};
     var n = { "registration_ids": tokens, "priority":"high", "notification":noti, "data" : data };
@@ -51,11 +73,20 @@ class _notification_centerState extends State<notification_center> {
       body: jsonEncode(n),
     );
     if (response.statusCode == 200) {
-      print(response);
-      return response.body;
+      Navigator.pop(dialogContext);
+      Navigator.pop(context);
+      print(response.body);
     } else {
-      print("error response 400");
-      throw Exception('Failed to call api');
+      Navigator.pop(dialogContext);
+      Fluttertoast.showToast(
+          msg: "Something Wrong... ",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM_LEFT,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
     }
   }
 
